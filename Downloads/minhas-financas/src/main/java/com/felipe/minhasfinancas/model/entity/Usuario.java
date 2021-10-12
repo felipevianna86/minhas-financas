@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -29,6 +30,9 @@ public class Usuario {
 
     @Column(name = "senha")
     private String senha;
+
+    @Column(name = "data_cadastro")
+    private LocalDate dataCadastro;
 
     @Override
     public boolean equals(Object o) {
