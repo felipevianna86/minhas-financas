@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public enum FuncaoEnum {
+public enum FuncaoLancamentoEnum {
 
     DEBITO(0,"DÉBITO"),
     CREDITO_NUBANK(1,"CRÉDITO NUBANK"),
@@ -19,7 +19,7 @@ public enum FuncaoEnum {
     private String funcao;
 
     public Map<Integer, String> getValues(){
-        return Arrays.stream(FuncaoEnum.values())
+        return Arrays.stream(FuncaoLancamentoEnum.values())
                 .collect(Collectors.toMap(k -> k.id, v -> v.funcao));
     }
 }
