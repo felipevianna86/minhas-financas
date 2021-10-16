@@ -1,8 +1,13 @@
-package com.felipe.minhasfinancas.model.entity;
+package com.felipe.minhasfinancas.lancamento.model;
 
 import com.felipe.minhasfinancas.enums.FuncaoLancamentoEnum;
 import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
 import com.felipe.minhasfinancas.enums.TipoLancamentoEnum;
+import com.felipe.minhasfinancas.usuario.model.Usuario;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
@@ -12,6 +17,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "lancamento", schema = "financas")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Lancamento {
 
     @Id

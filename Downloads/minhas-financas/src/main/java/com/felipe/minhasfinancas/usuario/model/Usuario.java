@@ -1,4 +1,4 @@
-package com.felipe.minhasfinancas.model.entity;
+package com.felipe.minhasfinancas.usuario.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
