@@ -1,5 +1,6 @@
 package com.felipe.minhasfinancas.usuario.service.impl;
 
+import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
 import com.felipe.minhasfinancas.usuario.model.Usuario;
 import com.felipe.minhasfinancas.usuario.repository.UsuarioRepository;
 import com.felipe.minhasfinancas.usuario.service.UsuarioService;
@@ -27,7 +28,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void validarEmail(String email) {
+    public void validarEmail(String email) throws RegraNegocioException {
+        boolean existe = usuarioRepository.existsByEmail(email);
 
+        if(existe){
+            throw new RegraNegocioException("Já existe um usuário cadastrado com esse e-mail.");
+        }
     }
 }

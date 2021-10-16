@@ -1,5 +1,6 @@
 package com.felipe.minhasfinancas.usuario.service;
 
+import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
 import com.felipe.minhasfinancas.usuario.model.Usuario;
 
 public interface UsuarioService {
@@ -8,5 +9,5 @@ public interface UsuarioService {
 
     Usuario salvarUsuario(Usuario usuario);
 
-    void validarEmail(String email);
+    void validarEmail(String email) throws RegraNegocioException;
 }
