@@ -5,26 +5,30 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UsuarioRepositoryTest {
 
     @Autowired
     UsuarioRepository usuarioRepository;
 
+    @Autowired
+    TestEntityManager testEntityManager;
+
     @Test
     public void deveVerificarExistenciaEmail(){
         //cenário
-        Usuario usuario = Usuario.builder()
-                .nome("Felipe Vianna")
-                .email("felipe.vianna86@gmail.com")
-                .build();
-        usuarioRepository.save(usuario);
+        Usuario usuario = buildUsuario();
+        testEntityManager.persist(usuario);
+
         //ação
         boolean existe = usuarioRepository.existsByEmail("felipe.vianna86@gmail.com");
 
@@ -34,10 +38,16 @@ public class UsuarioRepositoryTest {
 
     @Test
     public void deveRetornarFalsoQuandoNaoHouverUsuarioCadastradoComEmail(){
-        usuarioRepository.deleteAll();
 
         boolean existe = usuarioRepository.existsByEmail("felipe.vianna86@gmail.com");
 
         Assertions.assertThat(existe).isFalse();
+    }
+
+    private Usuario buildUsuario(){
+        return Usuario.builder()
+                .nome("Felipe Vianna")
+                .email("felipe.vianna86@gmail.com")
+                .build();
     }
 }
