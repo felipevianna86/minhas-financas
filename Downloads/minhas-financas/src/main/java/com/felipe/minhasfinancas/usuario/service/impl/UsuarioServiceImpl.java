@@ -1,5 +1,6 @@
 package com.felipe.minhasfinancas.usuario.service.impl;
 
+import com.felipe.minhasfinancas.exceptions.ErroAutenticacaoException;
 import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
 import com.felipe.minhasfinancas.usuario.model.Usuario;
 import com.felipe.minhasfinancas.usuario.repository.UsuarioRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -21,7 +23,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario autenticar(String email, String senha) {
-        return null;
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+
+        usuario.orElseThrow(() -> new ErroAutenticacaoException("Usuário não encontrado."));
+
+        Usuario usuarioLogado = usuario.get();
+
+        if(!senhaValida(usuarioLogado, senha)){
+            throw  new ErroAutenticacaoException("Senha inválida.");
+        }
+
+        return usuarioLogado;
     }
 
     @Override
@@ -39,5 +51,9 @@ public class UsuarioServiceImpl implements UsuarioService {
         if(existe){
             throw new RegraNegocioException("Já existe um usuário cadastrado com esse e-mail.");
         }
+    }
+
+    private boolean senhaValida(Usuario usuario, String senha) {
+        return usuario.getSenha().equals(senha);
     }
 }
