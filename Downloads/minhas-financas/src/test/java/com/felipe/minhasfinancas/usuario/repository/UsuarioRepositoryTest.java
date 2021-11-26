@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
@@ -44,10 +46,45 @@ public class UsuarioRepositoryTest {
         Assertions.assertThat(existe).isFalse();
     }
 
+    @Test
+    public void devePersistirUmUsuarioNaBase(){
+
+        Usuario usuario = buildUsuarioToSave();
+
+        usuario = usuarioRepository.save(usuario);
+
+        Assertions.assertThat(usuario.getId()).isNotNull();
+    }
+
+    @Test
+    public void deveBuscarUmUsuarioPorEmail(){
+        Usuario usuario = buildUsuarioToSave();
+        testEntityManager.persist(usuario);
+
+        Optional<Usuario> result = usuarioRepository.findByEmail(usuario.getEmail());
+
+        Assertions.assertThat(result.isPresent()).isTrue();
+    }
+
+    @Test
+    public void deveRetornarVazioQuandoUmUsuarioNaoExisteNaBase(){
+        Optional<Usuario> result = usuarioRepository.findByEmail("felipe.vianna86@gmail.com");
+
+        Assertions.assertThat(result.isPresent()).isFalse();
+    }
+
     private Usuario buildUsuario(){
         return Usuario.builder()
                 .nome("Felipe Vianna")
                 .email("felipe.vianna86@gmail.com")
+                .build();
+    }
+
+    private Usuario buildUsuarioToSave(){
+        return Usuario.builder()
+                .nome("Felipe Vianna")
+                .email("felipe.vianna86@gmail.com")
+                .senha("senha")
                 .build();
     }
 }
