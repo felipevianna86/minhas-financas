@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -22,15 +23,12 @@ import java.util.Optional;
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
 
-    UsuarioService usuarioService;
+    @SpyBean
+    UsuarioServiceImpl usuarioService;
 
     @MockBean
     UsuarioRepository usuarioRepository;
 
-    @BeforeEach
-    public void setUp(){
-        this.usuarioService = new UsuarioServiceImpl(this.usuarioRepository);
-    }
 
     @Test()
     public void deveValidarEmailUsuarioNaoExistente(){
@@ -53,7 +51,7 @@ public class UsuarioServiceTest {
         String email = "felipe.vianna86@gmail.com";
         String senha = "senha";
 
-        Usuario usuario = getUser(email, senha);
+        Usuario usuario = getUser(email, senha, null);
 
         Mockito.<Optional<Usuario>>when(this.usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
 
@@ -80,7 +78,7 @@ public class UsuarioServiceTest {
     @Test
     public void deveRetornarExcecaoPraSenhaErrada(){
 
-        Usuario usuario = getUser("felipe.vianna86@gmail.com", "123");
+        Usuario usuario = getUser("felipe.vianna86@gmail.com", "123", null);
 
         Mockito.when(this.usuarioRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
 
@@ -96,10 +94,27 @@ public class UsuarioServiceTest {
 
     }
 
-    private Usuario getUser(String email, String senha){
+    @Test
+    public void deveSalvarUsuario(){
+        Mockito.doNothing().when(usuarioService).validarEmail(Mockito.anyString());
+        Usuario usuario = getUser("felipe@gmail.com", "123", "felipe");
+
+        Mockito.when(this.usuarioRepository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
+
+        Usuario usuarioSalvo = this.usuarioService.salvarUsuario(new Usuario());
+
+        org.assertj.core.api.Assertions.assertThat(usuarioSalvo).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(usuarioSalvo.getId()).isEqualTo(1L);
+        org.assertj.core.api.Assertions.assertThat(usuarioSalvo.getNome()).isEqualTo("felipe");
+        org.assertj.core.api.Assertions.assertThat(usuarioSalvo.getEmail()).isEqualTo("felipe@gmail.com");
+        org.assertj.core.api.Assertions.assertThat(usuarioSalvo.getSenha()).isEqualTo("123");
+    }
+
+    private Usuario getUser(String email, String senha, String nome){
         return Usuario.builder()
                 .email(email)
                 .senha(senha)
+                .nome(nome)
                 .id(1L)
                 .build();
     }
