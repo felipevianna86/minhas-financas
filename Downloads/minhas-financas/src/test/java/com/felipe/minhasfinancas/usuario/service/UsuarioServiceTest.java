@@ -110,6 +110,21 @@ public class UsuarioServiceTest {
         org.assertj.core.api.Assertions.assertThat(usuarioSalvo.getSenha()).isEqualTo("123");
     }
 
+    @Test
+    public void naoDeveSalvarUsuarioComEmailRepetido(){
+        String email = "email@email.com";
+
+        Usuario usuario = Usuario.builder().email(email).build();
+        Mockito.doThrow(RegraNegocioException.class).when(this.usuarioService).validarEmail(email);
+
+        Assertions.assertThrows(RegraNegocioException.class, () ->{
+            this.usuarioService.salvarUsuario(usuario);
+        });
+
+        Mockito.verify(this.usuarioRepository, Mockito.never()).save(usuario);
+    }
+
+
     private Usuario getUser(String email, String senha, String nome){
         return Usuario.builder()
                 .email(email)
