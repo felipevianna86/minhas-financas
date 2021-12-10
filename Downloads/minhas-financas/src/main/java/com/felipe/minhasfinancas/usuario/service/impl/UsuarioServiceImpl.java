@@ -2,6 +2,7 @@ package com.felipe.minhasfinancas.usuario.service.impl;
 
 import com.felipe.minhasfinancas.exceptions.ErroAutenticacaoException;
 import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
+import com.felipe.minhasfinancas.usuario.dto.UsuarioDTO;
 import com.felipe.minhasfinancas.usuario.model.Usuario;
 import com.felipe.minhasfinancas.usuario.repository.UsuarioRepository;
 import com.felipe.minhasfinancas.usuario.service.UsuarioService;
@@ -53,7 +54,26 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
     }
 
+    @Override
+    @Transactional
+    public Usuario salvarUsuario(UsuarioDTO usuarioDTO) {
+
+        Usuario usuario = convertDTOToUsuario(usuarioDTO);
+
+        validarEmail(usuario.getEmail());
+
+        return usuarioRepository.save(usuario);
+    }
+
     private boolean senhaValida(Usuario usuario, String senha) {
         return usuario.getSenha().equals(senha);
+    }
+
+    private Usuario convertDTOToUsuario(UsuarioDTO usuarioDTO){
+        return Usuario.builder()
+                .nome(usuarioDTO.getNome())
+                .email(usuarioDTO.getEmail())
+                .senha(usuarioDTO.getSenha())
+                .build();
     }
 }
