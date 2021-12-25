@@ -3,6 +3,8 @@ package com.felipe.minhasfinancas.lancamento.service;
 import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 import com.felipe.minhasfinancas.lancamento.repository.LancamentoRepository;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +40,14 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     @Override
     public List<Lancamento> buscar(Lancamento filtro) {
-        return null;
+
+        Example example = Example.of(filtro,
+                ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+        );
+
+        return this.lancamentoRepository.findAll(example);
     }
 
     @Override
