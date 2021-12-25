@@ -12,8 +12,7 @@ import java.util.stream.Collectors;
 public enum FuncaoLancamentoEnum {
 
     DEBITO(0,"DÉBITO"),
-    CREDITO_NUBANK(1,"CRÉDITO NUBANK"),
-    CREDITO_INTER(2,"CRÉDITO INTER");
+    CREDITO(1,"CRÉDITO");
 
     private Integer id;
     private String funcao;
