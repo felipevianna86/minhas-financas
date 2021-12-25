@@ -4,8 +4,10 @@ import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 import com.felipe.minhasfinancas.lancamento.repository.LancamentoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class LancamentoServiceImpl implements LancamentoService {
@@ -17,18 +19,21 @@ public class LancamentoServiceImpl implements LancamentoService {
     }
 
     @Override
+    @Transactional
     public Lancamento salvar(Lancamento lancamento) {
-        return null;
+        return this.lancamentoRepository.save(lancamento);
     }
 
     @Override
     public Lancamento atualizar(Lancamento lancamento) {
-        return null;
+        Objects.requireNonNull(lancamento.getId());
+        return this.lancamentoRepository.save(lancamento);
     }
 
     @Override
     public void deletar(Lancamento lancamento) {
-
+        Objects.requireNonNull(lancamento.getId());
+        this.lancamentoRepository.delete(lancamento);
     }
 
     @Override
@@ -38,6 +43,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     @Override
     public void atualizarStatus(Lancamento lancamento, StatusLancamentoEnum status) {
-
+        lancamento.setStatus(status);
+        atualizar(lancamento);
     }
 }
