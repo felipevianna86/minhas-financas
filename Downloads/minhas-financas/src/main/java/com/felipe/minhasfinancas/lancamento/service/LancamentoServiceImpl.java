@@ -1,8 +1,14 @@
 package com.felipe.minhasfinancas.lancamento.service;
 
+import antlr.StringUtils;
+import com.felipe.minhasfinancas.dto.ExceptionDTO;
 import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
+import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 import com.felipe.minhasfinancas.lancamento.repository.LancamentoRepository;
+import com.felipe.minhasfinancas.util.NumberUtil;
+import com.felipe.minhasfinancas.util.StringUtil;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -23,12 +29,15 @@ public class LancamentoServiceImpl implements LancamentoService {
     @Override
     @Transactional
     public Lancamento salvar(Lancamento lancamento) {
+        validarLancamento(lancamento);
+        lancamento.setStatus(StatusLancamentoEnum.PENDENTE);
         return this.lancamentoRepository.save(lancamento);
     }
 
     @Override
     public Lancamento atualizar(Lancamento lancamento) {
         Objects.requireNonNull(lancamento.getId());
+        validarLancamento(lancamento);
         return this.lancamentoRepository.save(lancamento);
     }
 
@@ -54,5 +63,47 @@ public class LancamentoServiceImpl implements LancamentoService {
     public void atualizarStatus(Lancamento lancamento, StatusLancamentoEnum status) {
         lancamento.setStatus(status);
         atualizar(lancamento);
+    }
+
+    @Override
+    public void validarLancamento(Lancamento lancamento) {
+        ExceptionDTO exceptionDTO = retornaValidacao(lancamento);
+
+        if(!exceptionDTO.isValid()){
+            throw new RegraNegocioException(exceptionDTO.getMessageException());
+        }
+    }
+
+    private ExceptionDTO retornaValidacao(Lancamento lancamento){
+        boolean valid = true;
+        String messageException = Strings.EMPTY;
+
+        if(StringUtil.isEmpty(lancamento.getDescricao())){
+            valid = false;
+            messageException = "Informe uma descrição válida!";
+        }else if(!NumberUtil.mesValido(lancamento.getMes())){
+            valid = false;
+            messageException = "Informe um mês válido!";
+        }else if(!NumberUtil.anoValido(lancamento.getAno())){
+            valid = false;
+            messageException = "Informe um ano válido!";
+        }else if(!NumberUtil.valorPositivo(lancamento.getValor())){
+            valid = false;
+            messageException = "Informe um valor válido!";
+        }else if(lancamento.getUsuario() == null || lancamento.getUsuario().getId() == null){
+            valid = false;
+            messageException = "Informe um usuário!";
+        }else if(lancamento.getTipo() == null){
+            valid = false;
+            messageException = "Informe um tipo de pagamento!";
+        }else if(lancamento.getFuncao() == null){
+            valid = false;
+            messageException = "Informe uma função de pagamento!";
+        }
+
+        return ExceptionDTO.builder()
+                .valid(valid)
+                .messageException(messageException)
+                .build();
     }
 }
