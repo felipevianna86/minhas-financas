@@ -102,6 +102,16 @@ public class LancamentoServiceImpl implements LancamentoService {
         return this.atualizar(lancamento);
     }
 
+    @Override
+    public void remover(Long id) {
+
+        Optional<Lancamento> lancamentoDB = this.lancamentoRepository.findById(id);
+
+        lancamentoDB.orElseThrow(() -> new RegraNegocioException("Lançamento não encontrado!"));
+
+        this.lancamentoRepository.delete(lancamentoDB.get());
+    }
+
     private Lancamento convertDTO(LancamentoDTO lancamentoDTO){
 
         return Lancamento.builder()

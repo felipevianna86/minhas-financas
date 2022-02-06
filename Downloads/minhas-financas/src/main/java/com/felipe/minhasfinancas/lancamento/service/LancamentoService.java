@@ -23,4 +23,6 @@ public interface LancamentoService {
     Lancamento salvar(LancamentoDTO lancamentoDTO);
 
     Lancamento atualizar(LancamentoDTO lancamentoDTO);
+
+    void remover(Long id);
 }

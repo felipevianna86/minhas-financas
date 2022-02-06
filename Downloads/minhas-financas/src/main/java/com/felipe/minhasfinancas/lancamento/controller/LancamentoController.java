@@ -35,4 +35,14 @@ public class LancamentoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity remover(@PathVariable("id") Long id){
+        try {
+            this.lancamentoService.remover(id);
+            return new ResponseEntity(HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
