@@ -21,4 +21,15 @@ public enum FuncaoLancamentoEnum {
         return Arrays.stream(FuncaoLancamentoEnum.values())
                 .collect(Collectors.toMap(k -> k.id, v -> v.funcao));
     }
+
+    public static FuncaoLancamentoEnum getFuncao(Integer funcao){
+        if(funcao == 0){
+            return DEBITO;
+        }else if(funcao == 1){
+            return CREDITO;
+        }
+        else{
+            return null;
+        }
+    }
 }

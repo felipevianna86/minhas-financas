@@ -13,4 +13,6 @@ public interface UsuarioService {
     void validarEmail(String email) throws RegraNegocioException;
 
     Usuario salvarUsuario(UsuarioDTO usuarioDTO);
+
+    Usuario findUsuarioById(Long id);
 }

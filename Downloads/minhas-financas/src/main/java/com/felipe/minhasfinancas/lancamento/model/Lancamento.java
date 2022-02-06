@@ -4,10 +4,7 @@ import com.felipe.minhasfinancas.enums.FuncaoLancamentoEnum;
 import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
 import com.felipe.minhasfinancas.enums.TipoLancamentoEnum;
 import com.felipe.minhasfinancas.usuario.model.Usuario;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
@@ -21,6 +18,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Lancamento {
 
     @Id

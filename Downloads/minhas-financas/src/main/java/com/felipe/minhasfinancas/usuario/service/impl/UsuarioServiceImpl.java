@@ -65,6 +65,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    @Override
+    public Usuario findUsuarioById(Long id) {
+        return this.usuarioRepository.getById(id);
+    }
+
     private boolean senhaValida(Usuario usuario, String senha) {
         return usuario.getSenha().equals(senha);
     }
