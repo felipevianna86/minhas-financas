@@ -1,5 +1,6 @@
 package com.felipe.minhasfinancas.lancamento.controller;
 
+import com.felipe.minhasfinancas.lancamento.dto.FiltroLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.dto.LancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 import com.felipe.minhasfinancas.lancamento.service.LancamentoService;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/lancamentos")
@@ -23,6 +26,20 @@ public class LancamentoController {
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    public ResponseEntity buscar(@RequestBody FiltroLancamentoDTO filtroLancamentoDTO){
+            try {
+                List<Lancamento> lancamentos = this.lancamentoService.buscar(filtroLancamentoDTO);
+
+                if(lancamentos == null || lancamentos.isEmpty()){
+                    return ResponseEntity.noContent().build();
+                }
+
+                return ResponseEntity.ok(lancamentos);
+            }catch (Exception e){
+                return ResponseEntity.badRequest().build();
+            }
     }
 
     @PutMapping("{id}")

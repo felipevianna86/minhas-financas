@@ -1,6 +1,7 @@
 package com.felipe.minhasfinancas.lancamento.service;
 
 import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
+import com.felipe.minhasfinancas.lancamento.dto.FiltroLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.dto.LancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 
@@ -25,4 +26,6 @@ public interface LancamentoService {
     Lancamento atualizar(LancamentoDTO lancamentoDTO);
 
     void remover(Long id);
+
+    List<Lancamento> buscar(FiltroLancamentoDTO filtro);
 }

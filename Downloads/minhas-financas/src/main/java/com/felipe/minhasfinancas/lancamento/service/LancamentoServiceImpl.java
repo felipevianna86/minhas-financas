@@ -5,6 +5,7 @@ import com.felipe.minhasfinancas.enums.FuncaoLancamentoEnum;
 import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
 import com.felipe.minhasfinancas.enums.TipoLancamentoEnum;
 import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
+import com.felipe.minhasfinancas.lancamento.dto.FiltroLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.dto.LancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 import com.felipe.minhasfinancas.lancamento.repository.LancamentoRepository;
@@ -34,6 +35,13 @@ public class LancamentoServiceImpl implements LancamentoService {
                                  UsuarioService usuarioService){
         this.lancamentoRepository = lancamentoRepository;
         this.usuarioService = usuarioService;
+    }
+
+    @Override
+    public List<Lancamento> buscar(FiltroLancamentoDTO filtro){
+        Lancamento lancamento = convertDTOToLancamento(filtro);
+
+        return this.buscar(lancamento);
     }
 
     @Override
@@ -125,6 +133,16 @@ public class LancamentoServiceImpl implements LancamentoService {
                 .valor(lancamentoDTO.getValor())
                 .id(lancamentoDTO.getId())
                 .mes(lancamentoDTO.getMes())
+                .build();
+    }
+
+    private Lancamento convertDTOToLancamento(FiltroLancamentoDTO filtroLancamentoDTO){
+
+        return Lancamento.builder()
+                .ano(filtroLancamentoDTO.getAno())
+                .descricao(filtroLancamentoDTO.getDescricao())
+                .usuario(this.usuarioService.findUsuarioById(filtroLancamentoDTO.getIdUsuario()))
+                .mes(filtroLancamentoDTO.getMes())
                 .build();
     }
 
