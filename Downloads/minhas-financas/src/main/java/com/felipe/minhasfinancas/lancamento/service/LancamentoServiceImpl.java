@@ -7,6 +7,7 @@ import com.felipe.minhasfinancas.enums.TipoLancamentoEnum;
 import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
 import com.felipe.minhasfinancas.lancamento.dto.FiltroLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.dto.LancamentoDTO;
+import com.felipe.minhasfinancas.lancamento.dto.StatusLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 import com.felipe.minhasfinancas.lancamento.repository.LancamentoRepository;
 import com.felipe.minhasfinancas.usuario.service.UsuarioService;
@@ -78,9 +79,13 @@ public class LancamentoServiceImpl implements LancamentoService {
     }
 
     @Override
-    public void atualizarStatus(Lancamento lancamento, StatusLancamentoEnum status) {
-        lancamento.setStatus(status);
-        atualizar(lancamento);
+    public Lancamento atualizarStatus(StatusLancamentoDTO statusLancamentoDTO) {
+        Optional<Lancamento> lancamentoDB = this.lancamentoRepository.findById(statusLancamentoDTO.getIdLancamento());
+
+        lancamentoDB.orElseThrow(() -> new RegraNegocioException("Lançamento não encontrado!"));
+
+        lancamentoDB.get().setStatus(StatusLancamentoEnum.getStatusLancamento(statusLancamentoDTO.getStatus()));
+        return this.atualizar(lancamentoDB.get());
     }
 
     @Override

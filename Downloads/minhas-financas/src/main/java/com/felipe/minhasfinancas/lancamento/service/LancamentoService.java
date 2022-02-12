@@ -3,6 +3,7 @@ package com.felipe.minhasfinancas.lancamento.service;
 import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
 import com.felipe.minhasfinancas.lancamento.dto.FiltroLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.dto.LancamentoDTO;
+import com.felipe.minhasfinancas.lancamento.dto.StatusLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface LancamentoService {
 
     List<Lancamento> buscar(Lancamento filtro);
 
-    void atualizarStatus(Lancamento lancamento, StatusLancamentoEnum status);
+    Lancamento atualizarStatus(StatusLancamentoDTO statusLancamentoDTO);
 
     void validarLancamento(Lancamento lancamento);
 

@@ -2,6 +2,7 @@ package com.felipe.minhasfinancas.lancamento.controller;
 
 import com.felipe.minhasfinancas.lancamento.dto.FiltroLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.dto.LancamentoDTO;
+import com.felipe.minhasfinancas.lancamento.dto.StatusLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 import com.felipe.minhasfinancas.lancamento.service.LancamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,17 @@ public class LancamentoController {
         try {
             lancamentoDTO.setId(id);
             Lancamento lancamento = this.lancamentoService.atualizar(lancamentoDTO);
+            return ResponseEntity.ok(lancamento);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/atualiza-status")
+    public ResponseEntity atualizarStatus(@RequestBody StatusLancamentoDTO statusLancamentoDTO){
+        try {
+
+            Lancamento lancamento = this.lancamentoService.atualizarStatus(statusLancamentoDTO);
             return ResponseEntity.ok(lancamento);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
