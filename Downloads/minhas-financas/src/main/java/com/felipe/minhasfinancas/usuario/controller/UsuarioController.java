@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
@@ -37,4 +39,17 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/saldo/{id}")
+    public ResponseEntity consultaSaldo(@PathVariable("id") Long idUsuario){
+
+        try{
+            BigDecimal saldo = this.usuarioService.consultaSaldoByUsuario(idUsuario);
+
+            return ResponseEntity.ok(saldo);
+        }catch (RegraNegocioException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

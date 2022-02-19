@@ -2,6 +2,7 @@ package com.felipe.minhasfinancas.usuario.service.impl;
 
 import com.felipe.minhasfinancas.exceptions.ErroAutenticacaoException;
 import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
+import com.felipe.minhasfinancas.lancamento.service.LancamentoService;
 import com.felipe.minhasfinancas.usuario.dto.UsuarioDTO;
 import com.felipe.minhasfinancas.usuario.model.Usuario;
 import com.felipe.minhasfinancas.usuario.repository.UsuarioRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -17,9 +19,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private UsuarioRepository usuarioRepository;
 
+    private LancamentoService lancamentoService;
+
     @Autowired
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository){
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, LancamentoService lancamentoService){
         this.usuarioRepository = usuarioRepository;
+        this.lancamentoService = lancamentoService;
     }
 
     @Override
@@ -68,6 +73,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario findUsuarioById(Long id) {
         return this.usuarioRepository.getById(id);
+    }
+
+    public BigDecimal consultaSaldoByUsuario(Long idUsuario){
+
+        Optional<Usuario> usuarioDB = this.usuarioRepository.findById(idUsuario);
+
+        usuarioDB.orElseThrow( () -> new RegraNegocioException("Usuário não encontrado"));
+
+        return this.lancamentoService.consultaSaldoByUsuario(idUsuario);
     }
 
     private boolean senhaValida(Usuario usuario, String senha) {

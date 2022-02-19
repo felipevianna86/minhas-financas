@@ -20,6 +20,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -123,6 +124,24 @@ public class LancamentoServiceImpl implements LancamentoService {
         lancamentoDB.orElseThrow(() -> new RegraNegocioException("Lançamento não encontrado!"));
 
         this.lancamentoRepository.delete(lancamentoDB.get());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal consultaSaldoByUsuario(Long idUsuario){
+        BigDecimal receita = this.lancamentoRepository.consultaSaldoByTipoLancamentoAndUsuario(idUsuario, TipoLancamentoEnum.RECEITA.name());
+        BigDecimal despesa = this.lancamentoRepository.consultaSaldoByTipoLancamentoAndUsuario(idUsuario, TipoLancamentoEnum.DESPESA.name());
+
+        if(receita == null){
+            receita = BigDecimal.ZERO;
+        }
+
+        if(despesa == null){
+            despesa = BigDecimal.ZERO;
+        }
+
+        return receita.subtract(despesa);
+
     }
 
     private Lancamento convertDTO(LancamentoDTO lancamentoDTO){

@@ -6,6 +6,7 @@ import com.felipe.minhasfinancas.lancamento.dto.LancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.dto.StatusLancamentoDTO;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface LancamentoService {
@@ -29,4 +30,6 @@ public interface LancamentoService {
     void remover(Long id);
 
     List<Lancamento> buscar(FiltroLancamentoDTO filtro);
+
+    BigDecimal consultaSaldoByUsuario(Long idUsuario);
 }
