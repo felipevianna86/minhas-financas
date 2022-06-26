@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -39,9 +40,7 @@ public class LancamentoRepositoryTest {
 
     @Test
     public void deveDeletarLancamento(){
-        Lancamento lancamento = buildLancamento(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.PENDENTE);
-
-        testEntityManager.persist(lancamento);
+        Lancamento lancamento = createAndPersistLancamento();
 
         lancamento = testEntityManager.find(Lancamento.class, lancamento.getId());
 
@@ -49,6 +48,33 @@ public class LancamentoRepositoryTest {
         Lancamento lancamentoRemovido = testEntityManager.find(Lancamento.class, lancamento.getId());
         Assertions.assertThat(lancamentoRemovido).isNull();
 
+    }
+
+    @Test
+    public void deveAtualizarLancamento(){
+        Lancamento lancamento = createAndPersistLancamento();
+
+        lancamento.setAno(2018);
+        lancamento.setDescricao("Teste de atualização");
+        lancamento.setStatus(StatusLancamentoEnum.CANCELADO);
+
+        lancamentoRepository.save(lancamento);
+
+        Lancamento lancamentoUpdated = testEntityManager.find(Lancamento.class, lancamento.getId());
+
+        Assertions.assertThat(lancamento.getAno()).isEqualTo(2018);
+        Assertions.assertThat(lancamento.getDescricao()).isEqualTo("Teste de atualização");
+        Assertions.assertThat(lancamento.getStatus()).isEqualTo(StatusLancamentoEnum.CANCELADO);
+
+    }
+
+    @Test
+    public void deveBuscarLancamentoById(){
+        Lancamento lancamento = createAndPersistLancamento();
+
+        Optional<Lancamento> lancamentoCreated = lancamentoRepository.findById(lancamento.getId());
+
+        Assertions.assertThat(lancamentoCreated.isPresent()).isTrue();
     }
 
     private Lancamento buildLancamento(TipoLancamentoEnum tipo, StatusLancamentoEnum status){
@@ -61,6 +87,12 @@ public class LancamentoRepositoryTest {
                 .status(status)
                 .dataCadastro(LocalDate.now())
                 .build();
+    }
+
+    private Lancamento createAndPersistLancamento(){
+        Lancamento lancamento = buildLancamento(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.PENDENTE);
+        testEntityManager.persist(lancamento);
+        return lancamento;
     }
 
 }
