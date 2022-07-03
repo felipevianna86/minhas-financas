@@ -2,6 +2,7 @@ package com.felipe.minhasfinancas.usuario.controller;
 
 import com.felipe.minhasfinancas.exceptions.ErroAutenticacaoException;
 import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
+import com.felipe.minhasfinancas.lancamento.service.LancamentoService;
 import com.felipe.minhasfinancas.usuario.dto.UsuarioDTO;
 import com.felipe.minhasfinancas.usuario.model.Usuario;
 import com.felipe.minhasfinancas.usuario.service.UsuarioService;
@@ -18,6 +19,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private LancamentoService lancamentoService;
 
     @PostMapping
     public ResponseEntity salvarUsuario(@RequestBody UsuarioDTO usuarioDTO){
@@ -44,12 +48,11 @@ public class UsuarioController {
     public ResponseEntity consultaSaldo(@PathVariable("id") Long idUsuario){
 
         try{
-            BigDecimal saldo = this.usuarioService.consultaSaldoByUsuario(idUsuario);
+            BigDecimal saldo = this.lancamentoService.consultaSaldoByUsuario(idUsuario);
 
             return ResponseEntity.ok(saldo);
         }catch (RegraNegocioException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 }

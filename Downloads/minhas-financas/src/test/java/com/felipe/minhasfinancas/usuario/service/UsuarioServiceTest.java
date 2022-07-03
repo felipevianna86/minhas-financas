@@ -4,9 +4,7 @@ import com.felipe.minhasfinancas.exceptions.ErroAutenticacaoException;
 import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
 import com.felipe.minhasfinancas.usuario.model.Usuario;
 import com.felipe.minhasfinancas.usuario.repository.UsuarioRepository;
-import com.felipe.minhasfinancas.usuario.service.impl.UsuarioServiceImpl;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -24,7 +22,7 @@ import java.util.Optional;
 public class UsuarioServiceTest {
 
     @SpyBean
-    UsuarioServiceImpl usuarioService;
+    UsuarioService usuarioService;
 
     @MockBean
     UsuarioRepository usuarioRepository;
