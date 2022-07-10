@@ -12,11 +12,14 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.Example;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -95,6 +98,20 @@ public class LancamentoServiceTest {
         Assertions.catchThrowableOfType(() -> lancamentoService.deletar(lancamentoSaved), NullPointerException.class) ;
 
         Mockito.verify(lancamentoRepository, Mockito.never()).delete(lancamentoSaved);
+    }
+
+    @Test
+    public void deveBuscarLancamento(){
+        Lancamento lancamento = buildLancamento(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.PENDENTE);
+        lancamento.setId(1L);
+
+        List<Lancamento> lancamentos = Arrays.asList(lancamento);
+
+        Mockito.when(lancamentoRepository.findAll(Mockito.any(Example.class))).thenReturn(lancamentos);
+
+        List<Lancamento> listResult = lancamentoService.buscar(lancamento);
+
+        Assertions.assertThat(listResult).isNotEmpty().hasSize(1).contains(lancamento);
     }
 
     private Lancamento buildLancamento(TipoLancamentoEnum tipo, StatusLancamentoEnum status){
