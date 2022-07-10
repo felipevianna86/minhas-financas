@@ -75,10 +75,14 @@ public class LancamentoService {
     public Lancamento atualizarStatus(StatusLancamentoDTO statusLancamentoDTO) {
         Optional<Lancamento> lancamentoDB = this.lancamentoRepository.findById(statusLancamentoDTO.getIdLancamento());
 
-        lancamentoDB.orElseThrow(() -> new RegraNegocioException("Lançamento não encontrado!"));
+        validaLancamentoBuscado(lancamentoDB);
+        Lancamento lancamento = lancamentoDB.get();
+        setStatusNovo(lancamento, statusLancamentoDTO.getStatus());
+        return this.atualizar(lancamento);
+    }
 
-        lancamentoDB.get().setStatus(StatusLancamentoEnum.getStatusLancamento(statusLancamentoDTO.getStatus()));
-        return this.atualizar(lancamentoDB.get());
+    public void setStatusNovo(Lancamento lancamento, String novoStatus){
+        lancamento.setStatus(StatusLancamentoEnum.getStatusLancamento(novoStatus));
     }
 
     public void validarLancamento(Lancamento lancamento) {
@@ -190,5 +194,9 @@ public class LancamentoService {
                 .valid(valid)
                 .messageException(messageException)
                 .build();
+    }
+
+    public void validaLancamentoBuscado(Optional<Lancamento> lancamento){
+        lancamento.orElseThrow(() -> new RegraNegocioException("Lançamento não encontrado!"));
     }
 }

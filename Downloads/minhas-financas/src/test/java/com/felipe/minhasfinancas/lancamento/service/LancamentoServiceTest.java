@@ -114,6 +114,31 @@ public class LancamentoServiceTest {
         Assertions.assertThat(listResult).isNotEmpty().hasSize(1).contains(lancamento);
     }
 
+    /*@Test
+    public void deveAtualizarStatusLancamento(){
+        Lancamento lancamento = buildLancamento(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.PENDENTE);
+        lancamento.setId(1L);
+        StatusLancamentoEnum novoStatus = StatusLancamentoEnum.PAGO;
+
+        Mockito.doNothing().when(lancamentoService).validarLancamento(lancamento);
+       // Mockito.when(lancamentoRepository.save(lancamento)).thenReturn(lancamento);
+
+        //Lancamento lancamentoDB = lancamentoService.salvar(lancamento);
+
+        Optional<Lancamento> optionalLancamento = Optional.of(lancamento);
+        Mockito.doNothing().when(lancamentoService).validaLancamentoBuscado(optionalLancamento);
+        Mockito.when(lancamentoRepository.findById(lancamento.getId())).thenReturn(optionalLancamento);
+
+        StatusLancamentoDTO statusLancamentoDTO = buildStatusLancamentoDTO(novoStatus.toString(), lancamento.getId());
+
+        Mockito.when(lancamentoService.atualizarStatus(statusLancamentoDTO)).thenReturn(lancamento);
+
+        lancamento = lancamentoService.atualizarStatus(statusLancamentoDTO);
+
+        Assertions.assertThat(lancamento.getStatus()).isEqualTo(novoStatus);
+        Mockito.verify(lancamentoService).atualizar(lancamento);
+    }*/
+
     private Lancamento buildLancamento(TipoLancamentoEnum tipo, StatusLancamentoEnum status){
         return Lancamento.builder()
                 .ano(2019)
@@ -125,4 +150,11 @@ public class LancamentoServiceTest {
                 .dataCadastro(LocalDate.now())
                 .build();
     }
+
+    /*private StatusLancamentoDTO buildStatusLancamentoDTO(String status, Long idLancamento){
+        return StatusLancamentoDTO.builder()
+                .idLancamento(idLancamento)
+                .status(status)
+                .build();
+    }*/
 }
