@@ -21,7 +21,7 @@ public class NumberUtil {
     }
 
     public static boolean valorPositivo(BigDecimal valor){
-        if(valor != null && valor.compareTo(BigDecimal.ZERO) > 1){
+        if(valor != null && BigDecimal.ZERO.compareTo(valor) == -1){
             return true;
         }
 

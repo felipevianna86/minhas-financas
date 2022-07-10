@@ -1,10 +1,12 @@
 package com.felipe.minhasfinancas.lancamento.service;
 
+import com.felipe.minhasfinancas.enums.FuncaoLancamentoEnum;
 import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
 import com.felipe.minhasfinancas.enums.TipoLancamentoEnum;
 import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 import com.felipe.minhasfinancas.lancamento.repository.LancamentoRepository;
+import com.felipe.minhasfinancas.usuario.model.Usuario;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -167,6 +169,40 @@ public class LancamentoServiceTest {
         Optional<Lancamento> optionalLancamento = lancamentoService.obterPorID(id);
 
         Assertions.assertThat(optionalLancamento.isPresent()).isFalse();
+
+    }
+
+    @Test
+    public void deveLancarErrosValidacaoLancamento(){
+        Lancamento lancamento = new Lancamento();
+
+        Throwable erro = Assertions.catchThrowable(() -> lancamentoService.validarLancamento(lancamento));
+        Assertions.assertThat(erro).isInstanceOf(RegraNegocioException.class).hasMessage("Informe uma descrição válida!");
+        lancamento.setDescricao("Salário");
+
+        erro = Assertions.catchThrowable(() -> lancamentoService.validarLancamento(lancamento));
+        Assertions.assertThat(erro).isInstanceOf(RegraNegocioException.class).hasMessage("Informe um mês válido!");
+        lancamento.setMes(7);
+
+        erro = Assertions.catchThrowable(() -> lancamentoService.validarLancamento(lancamento));
+        Assertions.assertThat(erro).isInstanceOf(RegraNegocioException.class).hasMessage("Informe um ano válido!");
+        lancamento.setAno(2022);
+
+        erro = Assertions.catchThrowable(() -> lancamentoService.validarLancamento(lancamento));
+        Assertions.assertThat(erro).isInstanceOf(RegraNegocioException.class).hasMessage("Informe um valor válido!");
+        lancamento.setValor(BigDecimal.TEN);
+
+        erro = Assertions.catchThrowable(() -> lancamentoService.validarLancamento(lancamento));
+        Assertions.assertThat(erro).isInstanceOf(RegraNegocioException.class).hasMessage("Informe um usuário!");
+        lancamento.setUsuario(Usuario.builder().id(1L).build());
+
+        erro = Assertions.catchThrowable(() -> lancamentoService.validarLancamento(lancamento));
+        Assertions.assertThat(erro).isInstanceOf(RegraNegocioException.class).hasMessage("Informe um tipo de pagamento!");
+        lancamento.setTipo(TipoLancamentoEnum.RECEITA);
+
+        erro = Assertions.catchThrowable(() -> lancamentoService.validarLancamento(lancamento));
+        Assertions.assertThat(erro).isInstanceOf(RegraNegocioException.class).hasMessage("Informe uma função de pagamento!");
+        lancamento.setFuncao(FuncaoLancamentoEnum.CREDITO);
 
     }
 
