@@ -78,6 +78,25 @@ public class LancamentoServiceTest {
         Mockito.verify(lancamentoRepository, Mockito.never()).save(lancamentoASalvar);
     }
 
+    @Test
+    public void deveDeletarLancamento(){
+        Lancamento lancamentoSaved = buildLancamento(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.PENDENTE);
+        lancamentoSaved.setId(1L);
+
+        lancamentoService.deletar(lancamentoSaved);
+
+        Mockito.verify(lancamentoRepository).delete(lancamentoSaved);
+    }
+
+    @Test
+    public void naoDeveDeletarLancamentoQuandoValidar(){
+        Lancamento lancamentoSaved = buildLancamento(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.PENDENTE);
+
+        Assertions.catchThrowableOfType(() -> lancamentoService.deletar(lancamentoSaved), NullPointerException.class) ;
+
+        Mockito.verify(lancamentoRepository, Mockito.never()).delete(lancamentoSaved);
+    }
+
     private Lancamento buildLancamento(TipoLancamentoEnum tipo, StatusLancamentoEnum status){
         return Lancamento.builder()
                 .ano(2019)
