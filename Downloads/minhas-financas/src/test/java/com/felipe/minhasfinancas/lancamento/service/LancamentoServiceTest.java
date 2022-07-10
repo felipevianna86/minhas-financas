@@ -2,6 +2,7 @@ package com.felipe.minhasfinancas.lancamento.service;
 
 import com.felipe.minhasfinancas.enums.StatusLancamentoEnum;
 import com.felipe.minhasfinancas.enums.TipoLancamentoEnum;
+import com.felipe.minhasfinancas.exceptions.RegraNegocioException;
 import com.felipe.minhasfinancas.lancamento.model.Lancamento;
 import com.felipe.minhasfinancas.lancamento.repository.LancamentoRepository;
 import org.assertj.core.api.Assertions;
@@ -47,7 +48,12 @@ public class LancamentoServiceTest {
 
     @Test
     public void naoDeveSalvarLancamentoQuandoValidar(){
+        Lancamento lancamentoASalvar = buildLancamento(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.PENDENTE);
+        Mockito.doThrow(RegraNegocioException.class).when(lancamentoService).validarLancamento(lancamentoASalvar);
 
+        Assertions.catchThrowableOfType(() -> lancamentoService.salvar(lancamentoASalvar), RegraNegocioException.class) ;
+
+        Mockito.verify(lancamentoRepository, Mockito.never()).save(lancamentoASalvar);
     }
 
     private Lancamento buildLancamento(TipoLancamentoEnum tipo, StatusLancamentoEnum status){
