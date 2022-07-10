@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -138,6 +139,36 @@ public class LancamentoServiceTest {
         Assertions.assertThat(lancamento.getStatus()).isEqualTo(novoStatus);
         Mockito.verify(lancamentoService).atualizar(lancamento);
     }*/
+
+    @Test
+    public void deveObterLancamentoPorId(){
+        Long id = 1L;
+
+        Lancamento lancamento = buildLancamento(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.PENDENTE);
+        lancamento.setId(id);
+
+        Mockito.when(lancamentoRepository.findById(id)).thenReturn(Optional.of(lancamento));
+
+        Optional<Lancamento> optionalLancamento = lancamentoService.obterPorID(id);
+
+        Assertions.assertThat(optionalLancamento.isPresent()).isTrue();
+
+    }
+
+    @Test
+    public void deveRetornarVazioLancamentoPorId(){
+        Long id = 1L;
+
+        Lancamento lancamento = buildLancamento(TipoLancamentoEnum.RECEITA, StatusLancamentoEnum.PENDENTE);
+        lancamento.setId(id);
+
+        Mockito.when(lancamentoRepository.findById(id)).thenReturn(Optional.empty());
+
+        Optional<Lancamento> optionalLancamento = lancamentoService.obterPorID(id);
+
+        Assertions.assertThat(optionalLancamento.isPresent()).isFalse();
+
+    }
 
     private Lancamento buildLancamento(TipoLancamentoEnum tipo, StatusLancamentoEnum status){
         return Lancamento.builder()

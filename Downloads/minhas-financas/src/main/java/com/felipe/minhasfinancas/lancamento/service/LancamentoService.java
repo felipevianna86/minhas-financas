@@ -85,6 +85,10 @@ public class LancamentoService {
         lancamento.setStatus(StatusLancamentoEnum.getStatusLancamento(novoStatus));
     }
 
+    public Optional<Lancamento> obterPorID(Long idLancamento) {
+        return this.lancamentoRepository.findById(idLancamento);
+    }
+
     public void validarLancamento(Lancamento lancamento) {
         ExceptionDTO exceptionDTO = retornaValidacao(lancamento);
 
